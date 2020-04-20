@@ -1,6 +1,7 @@
 package android.example.popularmovies.utilities;
 
 import android.net.Uri;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -11,10 +12,10 @@ import java.util.Scanner;
 
 public class NetworkUtils {
 
-    final static String MOVIE_DB_API_KEY = "";
-    final static String POPULAR_MOVIE_BASE_URL = "https://api.themoviedb.org/3/movie/popular";
+    private final static String MOVIE_DB_API_KEY = "";
+    private final static String POPULAR_MOVIE_BASE_URL = "https://api.themoviedb.org/3/movie/popular";
 
-    final static String PARAM_API_KEY = "api_key";
+    private final static String PARAM_API_KEY = "api_key";
 
     public static URL buildUrl() {
         Uri builtUri = Uri.parse(POPULAR_MOVIE_BASE_URL).buildUpon()

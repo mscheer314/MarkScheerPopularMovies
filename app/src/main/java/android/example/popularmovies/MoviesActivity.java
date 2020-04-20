@@ -1,18 +1,16 @@
 package android.example.popularmovies;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.example.popularmovies.utilities.MovieJsonUtility;
 import android.example.popularmovies.utilities.NetworkUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONException;
 
@@ -22,9 +20,6 @@ import java.util.ArrayList;
 
 public class MoviesActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
-    private RecyclerView mRecyclerView;
-    private MoviesAdapter mMovieAdapter;
-    private GridLayoutManager layoutManager;
 
     private ArrayList<String> mPosters;
 
@@ -35,16 +30,15 @@ public class MoviesActivity extends AppCompatActivity {
 
         URL url = NetworkUtils.buildUrl();
         new MovieApiPosterTask().execute(url);
-        setUpRecyclerview();
     }
 
     private void setUpRecyclerview() {
-        mRecyclerView = findViewById(R.id.recyclerview_movies);
+        RecyclerView mRecyclerView = findViewById(R.id.recyclerview_movies);
         GridLayoutManager layoutManager =
                 new GridLayoutManager(MoviesActivity.this, 2);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        mMovieAdapter = new MoviesAdapter(MoviesActivity.this, mPosters);
+        MoviesAdapter mMovieAdapter = new MoviesAdapter(mPosters);
         mRecyclerView.setAdapter(mMovieAdapter);
     }
 
@@ -55,10 +49,10 @@ public class MoviesActivity extends AppCompatActivity {
         return true;
     }
 
-    public class MovieApiPosterTask extends AsyncTask<URL, ArrayList<String>, ArrayList<String>> {
+    class MovieApiPosterTask extends AsyncTask<URL, ArrayList<String>, ArrayList<String>> {
         private final String TAG = this.getClass().getSimpleName();
 
-        public MovieApiPosterTask() {
+        MovieApiPosterTask() {
         }
 
         @Override
@@ -78,7 +72,9 @@ public class MoviesActivity extends AppCompatActivity {
             }
             mPosters = posterPaths;
 
-            Log.v(TAG, "In doInBackground mPosters = " + mPosters.size());
+            if (mPosters != null) {
+                Log.v(TAG, "In doInBackground mPosters = " + mPosters.size());
+            }
             return posterPaths;
         }
 
@@ -86,6 +82,7 @@ public class MoviesActivity extends AppCompatActivity {
         protected void onPostExecute(ArrayList<String> strings) {
             mPosters = strings;
             Log.v(TAG, "In onPostExecute mPosters = " + mPosters.size());
+            setUpRecyclerview();
         }
     }
 }
