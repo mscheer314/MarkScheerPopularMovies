@@ -14,17 +14,26 @@ public class NetworkUtils {
 
     private final static String MOVIE_DB_API_KEY = "";
     private final static String POPULAR_MOVIE_BASE_URL = "https://api.themoviedb.org/3/movie/popular";
+    private final static String TOP_RATED_MOVIE_BASE_URL = "https://api.themoviedb.org/3/movie/top_rated";
 
     private final static String PARAM_API_KEY = "api_key";
 
-    public static URL buildUrl() {
-        Uri builtUri = Uri.parse(POPULAR_MOVIE_BASE_URL).buildUpon()
-                .appendQueryParameter(PARAM_API_KEY, MOVIE_DB_API_KEY)
-                .build();
+    public static URL buildUrl(int typeOfMovies) {
+        Uri builtUri = null;
+        if (typeOfMovies == 1) {
+            builtUri = Uri.parse(POPULAR_MOVIE_BASE_URL).buildUpon()
+                    .appendQueryParameter(PARAM_API_KEY, MOVIE_DB_API_KEY)
+                    .build();
+        } else if (typeOfMovies == 2) {
+            builtUri = Uri.parse(TOP_RATED_MOVIE_BASE_URL).buildUpon()
+                    .appendQueryParameter(PARAM_API_KEY, MOVIE_DB_API_KEY)
+                    .build();
+        }
 
         URL url = null;
         try {
-            url = new URL(builtUri.toString());
+            if (builtUri != null)
+                url = new URL(builtUri.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

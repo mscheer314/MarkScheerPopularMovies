@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,13 +24,20 @@ public class MoviesActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
 
     private ArrayList<String> mPosters;
+    // This int determines if the movies populated are "popular" or "top rated"
+    // 1 = popular movies
+    // 2 = top rated
+    private int typeOfMovies = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
+        startAsyncTask(typeOfMovies);
+    }
 
-        URL url = NetworkUtils.buildUrl();
+    private void startAsyncTask(int typeOfMovies) {
+        URL url = NetworkUtils.buildUrl(typeOfMovies);
         new MovieApiPosterTask().execute(url);
     }
 
@@ -46,6 +55,19 @@ public class MoviesActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_movies_activity, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.sort_popular) {
+            typeOfMovies = 1;
+        } else if (item.getItemId() == R.id.sort_top_rated) {
+            typeOfMovies = 2;
+        }
+
+        startAsyncTask(typeOfMovies);
+        setUpRecyclerview();
         return true;
     }
 
