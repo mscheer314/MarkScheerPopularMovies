@@ -1,5 +1,8 @@
 package android.example.popularmovies;
 
+import android.content.Context;
+import android.content.Intent;
+import android.example.popularmovies.model.Movie;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,23 +10,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
     private final String TAG = this.getClass().getSimpleName();
-    private final List<String> mImageList;
+    private final ArrayList<Movie> mMovies;
+    private final Context context;
 
-    MoviesAdapter(List<String> imageList) {
-        mImageList = imageList;
-        if (mImageList != null) {
-            Log.v(TAG, "In MoviesAdapter constructor mImageList.size = " + mImageList.size());
-        } else {
-            Log.v(TAG, "mImageList is null");
-        }
+    MoviesAdapter(Context context, ArrayList<Movie> movies) {
+        this.context = context;
+        mMovies = movies;
     }
 
     @NonNull
@@ -37,26 +39,27 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
     @Override
     public void onBindViewHolder(@NonNull MoviesViewHolder holder, int position) {
-        final String path = mImageList.get(position);
+        final String posterPath = mMovies.get(position).getPosterPath();
         Picasso.get().setLoggingEnabled(true);
         Picasso.get()
-                .load(path)
+                .load(posterPath)
                 .into(holder.posterView);
 
         holder.posterView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO implement onClick behavior for moviePosters
+                Intent intent = new Intent(context, MovieDetails.class);
+                context.startActivity(intent);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        if (mImageList == null) {
+        if (mMovies == null) {
             return 0;
         }
-        return mImageList.size();
+        return mMovies.size();
     }
 
     class MoviesViewHolder extends RecyclerView.ViewHolder {

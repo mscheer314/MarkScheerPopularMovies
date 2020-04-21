@@ -1,5 +1,6 @@
 package android.example.popularmovies;
 
+import android.example.popularmovies.model.Movie;
 import android.example.popularmovies.utilities.MovieJsonUtility;
 import android.example.popularmovies.utilities.NetworkUtils;
 import android.os.AsyncTask;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 public class MoviesActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
 
-    private ArrayList<String> mPosters;
+    private ArrayList<Movie> mMovies;
     // This int determines if the movies populated are "popular" or "top rated"
     // 1 = popular movies
     // 2 = top rated
@@ -47,7 +48,7 @@ public class MoviesActivity extends AppCompatActivity {
                 new GridLayoutManager(MoviesActivity.this, 2);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        MoviesAdapter mMovieAdapter = new MoviesAdapter(mPosters);
+        MoviesAdapter mMovieAdapter = new MoviesAdapter(this, mMovies);
         mRecyclerView.setAdapter(mMovieAdapter);
     }
 
@@ -71,39 +72,32 @@ public class MoviesActivity extends AppCompatActivity {
         return true;
     }
 
-    class MovieApiPosterTask extends AsyncTask<URL, ArrayList<String>, ArrayList<String>> {
+    class MovieApiPosterTask extends AsyncTask<URL, ArrayList<Movie>, ArrayList<Movie>> {
         private final String TAG = this.getClass().getSimpleName();
 
-        MovieApiPosterTask() {
-        }
+        MovieApiPosterTask() { }
 
         @Override
-        protected ArrayList<String> doInBackground(URL... urls) {
+        protected ArrayList<Movie> doInBackground(URL... urls) {
             URL movieUrl = urls[0];
             String movieResults = null;
-            ArrayList<String> posterPaths = null;
+            ArrayList<Movie> movies = null;
             try {
                 movieResults = NetworkUtils.getResponseFromHttpsUrl(movieUrl);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                posterPaths = MovieJsonUtility.getPosterPathsFromJson(movieResults);
+                movies = MovieJsonUtility.getMoviesFromJson(movieResults);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            mPosters = posterPaths;
-
-            if (mPosters != null) {
-                Log.v(TAG, "In doInBackground mPosters = " + mPosters.size());
-            }
-            return posterPaths;
+            return movies;
         }
 
         @Override
-        protected void onPostExecute(ArrayList<String> strings) {
-            mPosters = strings;
-            Log.v(TAG, "In onPostExecute mPosters = " + mPosters.size());
+        protected void onPostExecute(ArrayList<Movie> movies) {
+            mMovies = movies;
             setUpRecyclerview();
         }
     }
