@@ -38,7 +38,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MoviesViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MoviesViewHolder holder, final int position) {
         final String posterPath = mMovies.get(position).getPosterPath();
         Picasso.get().setLoggingEnabled(true);
         Picasso.get()
@@ -49,6 +49,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, MovieDetails.class);
+                intent.putExtra("movie", mMovies.get(position));
                 context.startActivity(intent);
             }
         });

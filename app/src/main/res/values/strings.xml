@@ -3,4 +3,5 @@
     <string name="popular">Popular</string>
     <string name="top_rated">Top Rated</string>
     <string name="movie_poster">movie poster</string>
+    <string name="vote_avg">Vote Avg:\ \</string>
 </resources>
